@@ -47,16 +47,13 @@ exports.Time = function(time) {
 		{
 			var clauses = time.split(/, | and | & |  /);
 			var clauses_length = clauses.length;
-			sys.puts(clauses);
 			for(var i = 0; i < clauses_length; i++)
 			{
-				sys.puts('clause: ' + clauses[i]);
 				var clause_parsed = clauses[i].match(/(\d+) (month|week|day|hour|minute|second)s?/);
 				if(clause_parsed != null)
 				{
 					var time = clause_parsed[1];
 					var unit = clause_parsed[2];
-					sys.puts(clause_parsed);
 					switch(unit)
 					{
 						case 'minute': 
@@ -102,13 +99,6 @@ exports.Time = function(time) {
 }
 
 exports.Every = function(timeInterval, callback) {
-	setInterval(callback, timeInterval.seconds * 1000);
+	var parsed_time_interval = exports.Time(timeInterval);
+	setInterval(callback, parsed_time_interval.seconds * 1000);
 };
-
-sys.puts(exports.Time('5 minutes').seconds);
-sys.puts(exports.Time('5 hours').seconds);
-sys.puts(exports.Time('5 days').seconds);
-sys.puts(exports.Time('1 minute and 5 seconds').seconds);
-sys.puts(exports.Time('1 hour & 1 minute and 5 seconds').seconds);
-sys.puts(exports.Time('1 minute 1 second').seconds);
-sys.puts(exports.Time((5).seconds()).seconds);
