@@ -43,29 +43,55 @@ exports.Time = function(time) {
 	else if(typeof(time) == 'string')
 	{
 		var interval = new TimeInterval();
-		var clauses = time.split(/, | and | & | /);
-		var clauses_length = clauses.length;
-		for(clause in clauses)
+		if(time.match(/^(\d+) (month|week|day|hour|minute|second)s?/))
 		{
-			var days = return_first_result_if_match(/(\d+) days?/,clause);
-			var hours = return_first_result_if_match(/(\d+) hours?/,clause);
-			var mins = return_first_result_if_match(/(\d+) minutes?/,clause);
-			var secs = return_first_result_if_match(/(\d+) seconds?/,clause);
-			if(mins)	
+			var clauses = time.split(/, | and | & |  /);
+			var clauses_length = clauses.length;
+			for(var i = 0; i < clauses_length; i++)
 			{
-				interval.addTo((+mins).minutes());
+				var clause_parsed = clauses[i].match(/(\d+) (month|week|day|hour|minute|second)s?/);
+				if(clause_parsed != null)
+				{
+					var time = clause_parsed[1];
+					var unit = clause_parsed[2];
+					switch(unit)
+					{
+						case 'minute': 
+							interval.addTo((+time).minutes());
+							break;
+						case 'hour': 
+							interval.addTo((+time).hours());
+							break;
+						case 'second': 
+							interval.addTo((+time).seconds());
+							break;
+						case 'day': 
+							interval.addTo((+time).days());
+							break;
+					}
+				}
 			}
-			else if(hours)
+		}	
+		else
+		{
+			var unit_parse = time.match(/month|week|day|hour|minute|second/);
+			if(unit_parse != null)
 			{
-				interval.addTo((+hours).hours());
-			}
-			else if(days)
-			{
-				interval.addTo((+days).days());
-			}
-			else if(secs)
-			{
-				interval.addTo((+secs).seconds());
+				switch(unit_parse[0])
+				{
+					case 'minute': 
+						interval.addTo((1).minutes());
+						break;
+					case 'hour': 
+						interval.addTo((1).hours());
+						break;
+					case 'second': 
+						interval.addTo((1).seconds());
+						break;
+					case 'day': 
+						interval.addTo((1).days());
+						break;
+				}
 			}
 		}
 		return interval;
@@ -73,13 +99,6 @@ exports.Time = function(time) {
 }
 
 exports.Every = function(timeInterval, callback) {
-	setInterval(callback, timeInterval.seconds * 1000);
+	var parsed_time_interval = exports.Time(timeInterval);
+	setInterval(callback, parsed_time_interval.seconds * 1000);
 };
-
-sys.puts(exports.Time('5 minutes').seconds);
-sys.puts(exports.Time('5 hours').seconds);
-sys.puts(exports.Time('5 days').seconds);
-sys.puts(exports.Time('1 minute and 5 seconds').seconds);
-sys.puts(exports.Time('1 hour & 1 minute and 5 seconds').seconds);
-sys.puts(exports.Time('1 minute 1 second').seconds);
-sys.puts(exports.Time((5).seconds()).seconds);
