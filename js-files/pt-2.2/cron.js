@@ -1,5 +1,10 @@
 // Sample for http://oliveriskindoffunny.tumblr.com/post/*not-published-yet*/
+
 function TimeInterval() {
+	// Here, we are defining the offset as the number of seconds from 12:00 AM,
+	// January 1st of an arbitrary year. The offset is something like the 
+	// "origin" on a Cartesian graph.
+	this.offset = 0;
 	this.seconds = 0;
 	this.addTo = function(ti) {
 		this.seconds += ti.seconds;
@@ -7,10 +12,9 @@ function TimeInterval() {
 	};
 }
 
-function generate_multiplier(multiplier)
-{
+function generate_multiplier(multiplier) {
 	return function() {
-		var interval = new TimeInterval(); // use var keyword!
+		var interval = new TimeInterval();
 		interval.seconds = this * multiplier;
 		return interval;
 	};
@@ -26,12 +30,10 @@ var sys = require('sys');
 
 function return_first_result_if_match(regex, str) {
 	var m_result = str.match(regex);	
-	if(m_result != null) 
-	{ 
+	if(m_result != null) { 
 		return m_result[1]; 
 	}
-	else 
-	{ 
+	else { 
 		return false; 
 	}
 }
@@ -58,33 +60,26 @@ function create_interval_with_n_units(n, unit) {
 }
 
 exports.Time = function(time) {
-	if(time instanceof TimeInterval)
-	{
+	if(time instanceof TimeInterval){
 		return time;
 	}
-	else if(typeof(time) == 'string')
-	{
+	else if(typeof(time) == 'string') {
 		var interval = new TimeInterval();
-		if(time.match(/^(\d+) (month|week|day|hour|minute|second)s?/))
-		{
+		if(time.match(/^(\d+) (month|week|day|hour|minute|second)s?/)) {
 			var clauses = time.split(/, | and | & |  /);
 			var clauses_length = clauses.length;
-			for(var i = 0; i < clauses_length; i++)
-			{
+			for(var i = 0; i < clauses_length; i++) {
 				var clause_parsed = clauses[i].match(/(\d+) (month|week|day|hour|minute|second)s?/);
-				if(clause_parsed != null)
-				{
+				if(clause_parsed != null) {
 					var time = clause_parsed[1];
 					var unit = clause_parsed[2];
 					interval.addTo(create_interval_with_n_units(time,unit));
 				}
 			}
-		}	
-		else
-		{
+		}
+		else {
 			var unit_parse = time.match(/month|week|day|hour|minute|second/);
-			if(unit_parse != null)
-			{
+			if(unit_parse != null) {
 				interval.addTo(create_interval_with_n_units(1,unit));
 			}
 		}
