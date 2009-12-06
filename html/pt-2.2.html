@@ -1,0 +1,31 @@
+<p>
+  We made our API a little prettier in this last installment. We take semi-fluid
+	strings as specifiers for how often something should be done. Often, though,
+  it makes sense to only perform intensive tasks at specific times when there 
+  is going to be less system load. On a Christian social networking site, this
+  might be noon on Sundays (when everybody is in church). The idea is simple,
+  and the implementation not much more difficult.
+</p>
+<p>
+	We still are interested in calling our callback functions at regular intervals. 
+	Which means that all that's changing here is that the initial action is offset
+	from the time that we create the task. Now hold on a second while I blow your 
+	fucking mind:
+</p>
+<pre>
+function TimeInterval() {
+	// Here, we are defining the offset as the number of seconds from 12:00 AM,
+	// January 1st of an arbitrary year. The offset is something like the 
+	// "origin" on a Cartesian graph.
+	this.offset = 0;
+	this.seconds = 0;
+	this.addTo = function(ti) {
+		this.seconds += ti.seconds;
+		return this;
+	};
+}
+</pre>
+<p>
+	That's right, bitches. One new field and a comment that takes up 3 times as 
+	many lines.
+</p>
