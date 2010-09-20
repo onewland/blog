@@ -28,16 +28,6 @@ Number.prototype.weeks = generate_multiplier(604800);
 
 var sys = require('sys');
 
-function return_first_result_if_match(regex, str) {
-	var m_result = str.match(regex);	
-	if(m_result != null) { 
-		return m_result[1]; 
-	}
-	else { 
-		return false; 
-	}
-}
-
 function create_interval_with_n_units(n, unit) {
 	switch(unit)
 	{
